@@ -1,4 +1,4 @@
-# Previsão de Satisfação de Clientes de Companhia Aérea
+# Fatores que Influenciam a Satisfação de Passageiros: Uma Abordagem com Árvore de Decisão
 
 Este projeto pessoal utiliza aprendizado de máquina para prever a satisfação de clientes de uma companhia aérea com base em diversos fatores, como conforto do assento, entretenimento a bordo, pontualidade e outros. O objetivo é construir um modelo preditivo que possa auxiliar a companhia aérea a identificar áreas de melhoria e aumentar a satisfação do cliente.
 
