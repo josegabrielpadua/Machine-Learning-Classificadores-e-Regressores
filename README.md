@@ -5,6 +5,7 @@ Este projeto pessoal utiliza aprendizado de máquina para prever a satisfação 
 ## Conjunto de Dados
 
 O projeto utiliza o conjunto de dados "Invistico_Airline.csv", que contém informações sobre as experiências de voo dos clientes e sua satisfação geral. O conjunto de dados inclui variáveis categóricas e numéricas.
+[Dados](https://www.kaggle.com/datasets/yakhyojon/customer-satisfaction-in-airline)
 
 ![image](https://github.com/user-attachments/assets/dc4381f1-d0d2-4019-b829-30976e3a5b77)
 
