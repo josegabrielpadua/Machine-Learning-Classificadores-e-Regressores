@@ -91,15 +91,13 @@ prev = modelo.predict(teste_x)
 print(f"A acurácia do modelo ExtraTreeClassifier é: {((accuracy_score(teste_y, f2(prev.round())))*100):.2f}%")
 ```
 
-
-O modelo final foi treinado utilizando um `Pipeline` com `StandardScaler` para padronizar os dados numéricos antes do treinamento do `DecisionTreeClassifier`.
-
 ## Resultado da Árvore de Decisão
 
 ![image](https://github.com/user-attachments/assets/563e54d7-e175-4d06-89db-75e13fd62129)
 
-
+O modelo final foi treinado utilizando um `Pipeline` com `StandardScaler` para padronizar os dados numéricos antes do treinamento do `DecisionTreeClassifier`.
 A acurácia do modelo final, `DecisionTreeClassifier` com `max_depth=3` e `StandardScaler`, foi de 85.50%. O notebook Jupyter incluído neste repositório detalha o processo de treinamento, avaliação e visualização da árvore de decisão.
+Apesar do StandardScaler ser útil para padronizar os dados e melhorar a eficácia do modelo, não o utilizei para essa árvore, até porque não faria sentido ter esses dados padronizados na minha árvore de decisão. 
 
 
 ```python
