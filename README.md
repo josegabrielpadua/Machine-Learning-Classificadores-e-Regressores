@@ -15,14 +15,21 @@ Os seguintes passos de pré-processamento foram realizados:
 
 * **Transformação de Dados Categóricos:** Variáveis categóricas, como "satisfação", "gênero", "tipo de cliente", "tipo de viagem" e "classe", foram convertidas em representações numéricas usando mapeamento.
 
-![image](https://github.com/user-attachments/assets/d6a7d72d-fac9-4ea3-89e7-cc34030899b2)
+```python
+dados['satisfaction'] = dados['satisfaction'].map({'satisfied': 1, 'dissatisfied': 0}).astype('int64')
+dados['Gender'] = dados['Gender'].map({'Female': 1, 'Male': 0}).astype('int64')
+dados['Customer Type'] = dados['Customer Type'].map({'Loyal Customer': 1, 'disloyal Customer': 0}).astype('int64')
+dados['Type of Travel'] = dados['Type of Travel'].map({'Business travel': 1, 'Personal Travel': 0}).astype('int64')
+dados['Class'] = dados['Class'].map({'Business': 1, 'Eco Plus': 2, 'Eco': 0}).astype('int64')
+```
 
 
 * **Tratamento de Valores Ausentes:** Valores ausentes na coluna "Atraso na Chegada em Minutos" foram preenchidos com 0.
 * **Conversão de Tipos de Dados:** A coluna "Atraso na Chegada em Minutos" foi convertida para o tipo inteiro.
-
-![image](https://github.com/user-attachments/assets/a17823e9-b953-4faa-b944-1201832d92fc)
-
+```python
+dados['Arrival Delay in Minutes'].fillna(0, inplace=True)
+dados['Arrival Delay in Minutes'] = dados['Arrival Delay in Minutes'].astype('int64')
+```
 
 ## Modelagem
 
@@ -38,9 +45,51 @@ Diversos modelos de classificação e de regressão foram testados, incluindo:
 
 A melhor performance foi obtida com o modelo `DecisionTreeClassifier` (e `ExtraTreeClassifier`), que apresentou uma acurácia de aproximadamente 85.50% (e 90.71%).  Uma árvore de decisão com `max_depth=3` foi escolhida para o modelo final por oferecer um bom equilíbrio entre acurácia e interpretabilidade.  A árvore de decisão com `max_depth=18` (ExtraTreeClassifier), embora mais precisa, resultou em uma árvore muito complexa, dificultando sua análise.
 
-![image](https://github.com/user-attachments/assets/0ae6d505-32dc-458e-9ec2-dfed05d33ba1)
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import numpy as np
 
-![image](https://github.com/user-attachments/assets/87894992-5b1d-46a7-b921-7e2b108a4bd5)
+def f(x):
+  return int(x)
+
+f2 = np.vectorize(f)
+
+x = dados.drop(['satisfaction', 'Customer Type'], axis=1)
+y = dados['satisfaction']
+
+modelo = DecisionTreeClassifier(max_depth=3)
+
+treino_x, teste_x, treino_y, teste_y = train_test_split(x, y, test_size=0.25, random_state=43)
+modelo.fit(treino_x, treino_y)
+prev = modelo.predict(teste_x)
+
+print(f"A acurácia do modelo DecisionTreeClassifier é: {((accuracy_score(teste_y, f2(prev.round())))*100):.2f}%")
+```
+
+```python
+from sklearn.tree import ExtraTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import numpy as np
+
+def f(x):
+  return int(x)
+
+f2 = np.vectorize(f)
+
+x = dados.drop(['satisfaction', 'Customer Type'], axis=1)
+y = dados['satisfaction']
+
+modelo = ExtraTreeClassifier(max_depth=18)
+
+treino_x, teste_x, treino_y, teste_y = train_test_split(x, y, test_size=0.25, random_state=43)
+modelo.fit(treino_x, treino_y)
+prev = modelo.predict(teste_x)
+
+print(f"A acurácia do modelo ExtraTreeClassifier é: {((accuracy_score(teste_y, f2(prev.round())))*100):.2f}%")
+```
 
 
 O modelo final foi treinado utilizando um `Pipeline` com `StandardScaler` para padronizar os dados numéricos antes do treinamento do `DecisionTreeClassifier`.
@@ -52,4 +101,32 @@ O modelo final foi treinado utilizando um `Pipeline` com `StandardScaler` para p
 
 A acurácia do modelo final, `DecisionTreeClassifier` com `max_depth=3` e `StandardScaler`, foi de 85.50%. O notebook Jupyter incluído neste repositório detalha o processo de treinamento, avaliação e visualização da árvore de decisão.
 
-![image](https://github.com/user-attachments/assets/12a3416e-8b66-4f40-906c-5e397aab782a)
+
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import numpy as np
+
+def f(x):
+  return int(x)
+
+f2 = np.vectorize(f)
+
+x = dados.drop(['satisfaction', 'Customer Type'], axis=1)
+y = dados['satisfaction']
+
+treino_x, teste_x, treino_y, teste_y = train_test_split(x, y, test_size=0.25, random_state=43)
+
+modelo = Pipeline([
+    ('scaler', StandardScaler()),
+    ('tree', DecisionTreeClassifier(max_depth=3))
+])
+
+modelo.fit(treino_x, treino_y)
+prev = modelo.predict(teste_x)
+
+print(f"A acurácia do modelo DecisionTreeClassifier é: {((accuracy_score(teste_y, f2(prev.round())))*100):.2f}%")
+```
